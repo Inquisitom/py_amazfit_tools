@@ -1,21 +1,31 @@
 import datetime
 
+from watchFaceParser.models.weatherCondition import WeatherCondition
 
 class WatchState:
-    def __init__(self, BatteryLevel = 67, Pulse = 62, Steps = 14876, Calories = 764, Distance = 2367, Bluetooth = False, Unlocked = False, Alarm = False, DoNotDisturb = False):
+    def __init__(self, BatteryLevel = 67, Pulse = 62, Steps = 14876, Calories = 764, Distance = 2367, Pai = 76, SunriseHour = 7, SunriseMinute = 13, SunsetHour = 21, SunsetMinute = 47, Bluetooth = False, Unlocked = False, Alarm = False, DoNotDisturb = False, CurrentTemperature = -10, Stand = 3):
         self._time = datetime.datetime.now().replace(hour = 10, minute = 10, second = 30)
         self._steps = Steps
         self._goal = 8000
         self._distance = Distance
         self._calories = Calories
         self._pulse = Pulse
+        self._pai = Pai
         self._batteryLevel = BatteryLevel
         self._bluetooth = Bluetooth
         self._unlocked = Unlocked
         self._alarm = Alarm
         self._doNotDisturb = DoNotDisturb
+        self._stand = Stand
 
-
+        self._currentWeather = WeatherCondition.PartlyCloudy
+        self._currentTemperature = CurrentTemperature
+        
+        self._sunrisehour = SunriseHour
+        self._sunriseminute = SunriseMinute
+        self._sunsethour = SunsetHour
+        self._sunsetminute = SunsetMinute
+        
     def getTime(self):
         return self._time
 
@@ -47,6 +57,11 @@ class WatchState:
     def getCalories(self):
         return self._calories
 
+    def getPai(self):
+        return self._pai
+
+    def getStand(self):
+        return self._stand
 
     def getBluetooth(self):
         return self._bluetooth
@@ -63,6 +78,35 @@ class WatchState:
     def getDoNotDisturb(self):
         return self._doNotDisturb
 
+    def getWeather(self):
+        return self._weather
+
+    def getCurrentWeather(self):
+        return self._currentWeather
+
+
+    def getCurrentTemperature(self):
+        return self._currentTemperature
+
+    def getSunsetHour(self):
+        return self._sunsethour
+
+    def getSunsetMinute(self):
+        return self._sunsetminute
+        
+    def getSunriseHour(self):
+        return self._sunrisehour
+        
+    def getSunriseMinute(self):
+        return self._sunriseminute
+
+    def setCurrentWeather(self, n):
+        self._currentWeather = n
+
+
+    def setCurrentTemperature(self, n):
+        self._currentTemperature = n
+
 
     def toJSON(self):
         return {
@@ -73,10 +117,18 @@ class WatchState:
             'BatteryLevel': self._batteryLevel,
             'Distance': self._distance,
             'Calories': self._calories,
+            'Pai': self._pai,
             'Bluetooth': self._bluetooth,
             'Unlocked': self._unlocked,
             'Alarm': self._alarm,
             'DoNotDisturb': self._doNotDisturb,
+            'CurrentWeather': self._currentWeather,
+            'CurrentTemperature': self._currentTemperature,
+            'SunriseHour': self._sunrisehour,
+            'SunriseMinute': self._sunriseminute,
+            'SunsetHour': self._sunsethour,
+            'SunsetMinute': self._sunsetminute,
+            'Stand': self._stand,
         }
 
     def datetimeToJson(self):
@@ -94,9 +146,17 @@ class WatchState:
         w._batteryLevel = j['BatteryLevel']
         w._distance = j['Distance']
         w._calories = j['Calories']
+        w._pai = j['PAI']
         w._bluetooth = j['Bluetooth']
         w._unlocked = j['Unlocked']
         w._alarm = j['Alarm']
         w._doNotDisturb = j['DoNotDisturb']
+        w._currentWeather = j['CurrentWeather']
+        w._currentTemperature = j['CurrentTemperature']
+        w._sunrisehour = j['SunriseHour']
+        w._sunriseminute = j['SunriseMinute']
+        w._sunsethour = j['SunsetHour']
+        w._sunsetminute = j['SunsetMinute']
+        w._stand = j['Stand']
         return w
 

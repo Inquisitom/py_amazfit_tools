@@ -4,15 +4,16 @@ from watchFaceParser.config import Config
 class Header:
     dialSignature = b"HMDIAL\0"
 
+    deviceIdPos = 0
     headerSize = 40
     unknownPos = 32
     parametersSizePos = 36
 
-    def __init__(self, unknown, parametersSize):
+    def __init__(self, unknown, parametersSize, deviceId = None):
         self.signature = Header.dialSignature
         self.unknown = unknown
         self.parametersSize = parametersSize
-
+        self.deviceId = deviceId
 
     def isValid(self):
         return self.signature == Header.dialSignature
@@ -47,10 +48,21 @@ class Header:
             6 : [0x20, 0x00, 0x6f, 0xea, 0x00, 0x00, 0x14, 0xde],
             7 : [0x20, 0x00, 0x70, 0xea, 0x00, 0x00, 0x35, 0xa1],
             8 : [0x20, 0x00, 0x6c, 0xea, 0x00, 0x00, 0x3f, 0x2c],
-            9 : [0x28, 0x00, 0x8c, 0xea, 0x00, 0x00, 0x01, 0xbc], # gtr only (by manelto)
+            40 : [0x2e, 0x00, 0xaa, 0xeb, 0x00, 0x00, 0x68, 0xf1], #gts 0xaa, 0x68, 0xf1 may vary
+            47 : [0x28, 0x00, 0x8c, 0xea, 0x00, 0x00, 0x01, 0xbc], # gtr 47
+            42 : [0x2a, 0x00, 0x72, 0xeb, 0x00, 0x00, 0x5c, 0xd3], # gtr 42
+            50 : [0x34, 0x00, 0x1e, 0x1c, 0x00, 0x00, 0x49, 0xce], # trex
+            53 : [0x35, 0x00, 0x09, 0x00, 0x00, 0x00, 0x4b, 0x9a], # AmazfitX
         }
+
         if Config.isGtrMode():
-            index = 9
+            index = Config.isGtrMode()
+        if Config.isGtsMode():
+            index = Config.isGtsMode()
+        if Config.isTrexMode():
+            index = Config.isTrexMode()
+        if Config.isAmazfitXMode():
+            index = Config.isAmazfitXMode()
         p_0x10 = data_0x10[index]
         for i in range(len(p_0x10)):
             buffer[0x10 + i] = p_0x10[i]
@@ -73,9 +85,9 @@ class Header:
             Header.parametersSizePos = 56 - 16
 
         buffer = stream.read(Header.headerSize)
-
         header = Header(
             unknown = int.from_bytes(buffer[Header.unknownPos:Header.unknownPos+4], byteorder='little'),
-            parametersSize = int.from_bytes(buffer[Header.parametersSizePos:Header.parametersSizePos+4], byteorder='little'))
+            parametersSize = int.from_bytes(buffer[Header.parametersSizePos:Header.parametersSizePos+4], byteorder='little'),
+            deviceId = int.from_bytes(buffer[Header.deviceIdPos:Header.deviceIdPos+1], byteorder='little'))
         header.signature = sig_buffer[0:7]
         return header

@@ -12,6 +12,7 @@ from watchFaceParser.models.fileDescriptor import FileDescriptor
 from watchFaceParser.models.watchState import WatchState
 from watchFaceParser.previewGenerator import PreviewGenerator
 from watchFaceParser.config import Config
+from watchFaceParser.models.weatherCondition import WeatherCondition
 
 
 def dumper(obj):
@@ -62,6 +63,9 @@ class Parser:
 
             logging.debug("Building parameters for watch face...")
             descriptor = ParametersConverter.build(WatchFace, watchFace)
+            if descriptor[0].getId() == 0:
+                #dirty hack to retrieve the deviceid from json
+                Config.setDeviceId(descriptor.pop(0).getChildren()[0].getValue())
 
             baseName, _ = os.path.splitext(os.path.basename(outputFileName))
             Parser.generatePreviews(descriptor, imagesReader.getImages(), outputDirectory, baseName)
@@ -175,14 +179,42 @@ class Parser:
         states = Parser.getPreviewStates(outputDirectory)
         logging.debug("Generating states done...")
         staticPreview = PreviewGenerator.createImage(parameters, images, WatchState())
+
         logging.debug("Generating static preview gen done...")
         staticPreview.save(os.path.join(outputDirectory, f"{baseName}_static.png"))
 
-        # generate small preview image for Preview section.
-        from PIL import Image
-        new_w, new_h = Config.getPreviewSize(), Config.getPreviewSize()
-        im_resized = staticPreview.resize((new_w, new_h), resample = Image.LANCZOS)
-        im_resized.save(os.path.join(outputDirectory, f"{baseName}_static_{Config.getPreviewSize()}.png"))
+        #generate small preview image for Preview section.
+        from PIL import Image, ImageDraw, ImageOps
+        new_w, new_h = Config.getPreviewSize()
+        if Config.isGtsMode:
+            im_resized = ImageOps.expand(staticPreview, border=5)
+            im_resized = im_resized.resize((new_w, new_h), resample = Image.LANCZOS)
+        else:
+            im_resized = staticPreview.resize((new_w, new_h), resample = Image.LANCZOS)
+
+        def rounded_rectangle(draw, box, radius, color):
+            l, t, r, b = box
+            d = radius * 2
+            draw.ellipse((l, t, l + d, t + d), color)
+            draw.ellipse((r - d, t, r, t + d), color)
+            draw.ellipse((l, b - d, l + d, b), color)
+            draw.ellipse((r - d, b - d, r, b), color)
+            d = radius
+            draw.rectangle((l, t + d, r, b - d), color)
+            draw.rectangle((l + d, t, r - d, b), color)
+
+        xy = (10,310)
+        corner_radius = 38
+
+        if Config.isGtsMode():
+            mask = Image.new("RGBA", Config.getPreviewSize(), (255, 255, 255, 0))
+            d = ImageDraw.Draw(mask)
+
+            rounded_rectangle(d,(3,3 , new_w -3,new_h-3),corner_radius,(180,180,180,255))
+            rounded_rectangle(d,(5,5 , new_w-5,new_h-5),corner_radius,(255,255,255,0))
+            im_resized.paste(mask,(0,0),mask)
+
+        im_resized.save(os.path.join(outputDirectory, f"{baseName}_static_{new_h}.png"))
         logging.debug("Generating static preview save done...")
 
         previewImages = PreviewGenerator.createAnimation(parameters, images, states)
@@ -232,11 +264,26 @@ class Parser:
                 Steps = num * 1000,
                 Calories = num * 75,
                 Distance = num * 700,
+                Pai = num * 10,
+                Stand = num,
+                SunriseHour = 4 + i,
+                SunriseMinute = i * 5,
+                SunsetHour = 16 + i,
+                SunsetMinute = num * 5,
                 Bluetooth = num > 1 and num < 6,
                 Unlocked = num > 2 and num < 7,
                 Alarm = num > 3 and num < 8,
                 DoNotDisturb = num > 4 and num < 9,
+                CurrentTemperature = -15 + 2 * i,
             )
+
+            if num < 3:
+                watchState.setCurrentWeather(WeatherCondition.Unknown)
+                watchState.setCurrentTemperature(None)
+            else:
+                index = num - 2
+                watchState.setCurrentWeather(index)
+                watchState.setCurrentTemperature(-10 + i * 6)
 
             watchState.setTime(datetime.datetime(year = time.year, month = num, day = num * 2 + 5, hour = i * 2, minute = i * 6, second = i))
             states.append(watchState)

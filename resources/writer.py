@@ -21,11 +21,16 @@ class Writer:
 
         cur_pos = self._stream.tell()
         num_padding = 4 - cur_pos % 4
+        #num_padding = cur_pos % 4 #gts
         offset = num_padding
+        #print ("o",cur_pos)
+        #print ("padding_orig",4 - cur_pos % 4)
+        #print ("padding_mod",cur_pos % 4)
 
         for i in range(len(resources)):
             logging.debug(f"Resource {i} offset is {offset}...")
             offsetBytes = offset.to_bytes(4, byteorder='little')
+            #print (offsetBytes)
             offsetsTable[i * self.OffsetTableItemLength:i * self.OffsetTableItemLength + 4] = offsetBytes
 
             encodedImage = io.BytesIO()

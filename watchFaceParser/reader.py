@@ -2,6 +2,7 @@ import logging
 import io
 
 from watchFaceParser.models.parameter import Parameter
+from watchFaceParser.config import Config
 
 
 class Reader:
@@ -16,9 +17,12 @@ class Reader:
         from watchFaceParser.models.header import Header
         header = Header.readFrom(self._stream)
         logging.info("Header was read:")
-        logging.info(f"Signature: {header.signature}, Unknown: {header.unknown}, ParametersSize: {header.parametersSize}, isValid: {header.isValid()}")
+        logging.info(f"Signature: {header.signature}, Unknown: {header.unknown}, ParametersSize: {header.parametersSize}, isValid: {header.isValid()}, deviceId: {header.deviceId}")
+
+        Config.setDeviceId(header.deviceId)
 
         if not header.isValid():
+            logging.info("Header is not valid!")
             return
 
         logging.info("Reading parameter offsets...")
@@ -47,8 +51,10 @@ class Reader:
 
         result = []
         for parameterDescriptor in parametersDescriptors:
+            #print ("parameterDescriptor",parameterDescriptor.getId())
             descriptorOffset = parameterDescriptor.getChildren()[0].getValue()
             descriptorLength = parameterDescriptor.getChildren()[1].getValue()
+            #print ("parameterDescriptor",parameterDescriptor.getId(),"%02x"%descriptorOffset,descriptorLength)
             logging.info(f"Reading descriptor for parameter {parameterDescriptor.getId()}")
             logging.info(f"Descriptor offset: {descriptorOffset}, Descriptor length: {descriptorLength}")
             parametersStream.seek(descriptorOffset)
@@ -56,6 +62,10 @@ class Reader:
             logging.info(f"Parsing descriptor for parameter {parameterDescriptor.getId()}...")
             result.append(Parameter(parameterDescriptor.getId(), Parameter.readList(descriptorStream)))
 
+            descriptorStream.seek(0)
+            #print ([ "%02x" % x for x in descriptorStream.read()])
+
+        result.insert(0, Parameter(0, [Parameter(1, Config.getDeviceId())]))
         return result
 
 

@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\release",
+    "\\release\\win32",
+    "\\resources",
+    "\\resources\\image",
+    "\\resources\\models",
+    "\\scripts",
+    "\\watchFaceParser"
+  ],
+  "SelectedNode": "\\resources\\image\\_init_.py",
+  "PreviewInSolutionExplorer": false
+}
