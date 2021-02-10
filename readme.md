@@ -15,12 +15,6 @@ All credit goes to Валерий Миронов(https://bitbucket.org/valeronm/
 
 ## usage
 * for Amazfit X
-  * see scripts folder
-    * to unpack
-      * python main.py WATCH_FACE_FILE.bin
-    * to pack
-      * python main.py WATCH_FACE_FILE.json
-* for Amazfit X
   * to unpack
     * python main.py --x --file WATCH_FACE_FILE.bin
   * to pack
