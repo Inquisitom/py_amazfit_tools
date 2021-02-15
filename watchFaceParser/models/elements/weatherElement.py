@@ -7,6 +7,10 @@ class WeatherElement(ContainerElement):
     def __init__(self, parameter, parent = None, name = None):
         self._icon = None
         self._temperature = None
+        self._uv = None
+        self._nodatauvimageindex = None
+        self._humidity = None
+        self._humiditysuffiximageindex = None
         self._sunrisehour = None
         self._sunriseminute = None
         self._sunsethour = None
@@ -20,6 +24,18 @@ class WeatherElement(ContainerElement):
 
     def getTemperature(self):
         return self._temperature
+
+    def getUV(self):
+        return self._uv
+
+    def getNoDataUVImageIndex(self):
+        return self._nodatauvimageindex
+
+    def getHumidity(self):
+        return self._humidity
+
+    def getHumiditySuffixImageIndex(self):
+        return self._humiditysuffiximageindex
 
     def getNoDataSunsetImageIndex(self):
         return self._nodatasunsetimageindex
@@ -46,9 +62,25 @@ class WeatherElement(ContainerElement):
             self._icon = WeatherIconElement(parameter = parameter, parent = self, name = '?_icon?')
             return self._icon
         elif parameterId == 2:
-            from watchFaceParser.models.elements.weather.temperatureElement import TemperatureElement # temp.
+            from watchFaceParser.models.elements.weather.temperatureElement import TemperatureElement 
             self._temperature = TemperatureElement(parameter = parameter, parent = self, name = '?_temperature?')
             return self._temperature
+        #elif parameterId == 6: # humidity
+        #    from watchFaceParser.models.elements.weather.humidityElement import HumidityElement 
+        #    self._humidity = HumidityElement(parameter = parameter, parent = self, name = '?_humidity?')
+        #    return self._humidity
+        #elif parameterId == 4: # humidity suffix 
+        #    from watchFaceParser.models.elements.weather.humiditysuffiximageindexElement import HumiditySuffixImageIndexElement 
+        #    self._humiditysuffiximageindex = HumiditySuffixImageIndexElement(parameter = parameter, parent = self, name = '?_humiditysuffiximageindex?')
+        #    return self._humiditysuffiximageindex
+        #elif parameterId == 5: # UV !
+        #    from watchFaceParser.models.elements.weather.uvElement import UVElement 
+        #    self._uv = UVElement(parameter = parameter, parent = self, name = '?_uv?')
+        #    return self._uv
+        #elif parameterId == 6: # No data UV !
+        #    from watchFaceParser.models.elements.weather.nodatauvimageindexElement import NoDataUVImageIndexElement 
+        #    self._nodatauvimageindex = NoDataUVImageIndexElement(parameter = parameter, parent = self, name = '?_nodatauvimageindex?')
+        #    return self._nodatauvimageindex
         elif parameterId == 10:
             from watchFaceParser.models.elements.weather.sunrisehourElement import SunriseHourElement 
             self._sunrisehour = SunriseHourElement(parameter = parameter, parent = self, name = '?_sunrisehour?')

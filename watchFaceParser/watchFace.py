@@ -13,6 +13,7 @@ from watchFaceParser.elements.unknownType14 import UnknownType14
 from watchFaceParser.elements.shortcuts import Shortcuts
 from watchFaceParser.elements.daysProgress import DaysProgress
 from watchFaceParser.elements.paiProgress import PaiProgress
+from watchFaceParser.elements.kcalProgress import KCalProgress
 from watchFaceParser.elements.weather import Weather
 
 class WatchFace:
@@ -31,6 +32,7 @@ class WatchFace:
         14: { 'Name': 'Unknown14', 'Type': UnknownType14},
         15: { 'Name': 'DaysProgress', 'Type': DaysProgress},
         16: { 'Name': 'Shortcuts', 'Type': Shortcuts}, #stargate.bin
-        #20: { 'Name': 'StandProgress', 'Type': StandProgress},#?!!
-        19: { 'Name': 'PaiProgress', 'Type': PaiProgress},        
+        17: { 'Name': 'KCalProgress', 'Type': KCalProgress},
+        18: { 'Name': 'StandProgress', 'Type': StandProgress},
+        19: { 'Name': 'PaiProgress', 'Type': PaiProgress}
     }

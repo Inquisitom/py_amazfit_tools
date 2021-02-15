@@ -11,9 +11,9 @@ class BatteryNumberElement(NumberElement):
     def draw3(self, drawer, resources, state):
         assert(type(resources) == list)
         temperature = self._parent
-		
+
         images = self._parent.getText().getImagesForNumber(resources, state.getBatteryLevel())
-		
+
         #print ("DEBUGGGG-",images)
         if self._parent.getPercent():
             images.append(resources[self._parent.getPercent().getImageIndex()])

@@ -45,8 +45,9 @@ class PaiProgressElement(ContainerElement):
             self._paiLinear = PaiLinearElement(parameter = parameter, parent = self, name = '?paiLinear?')
             return self._paiLinear
         elif parameterId == 4:
-            from watchFaceParser.models.elements.goalProgress.paiGaugeElement import PaiGaugeElement # temp.
-            self._images4 = PaiGaugeElement(parameter = parameter, parent = self, name = '?_images?')
+            #TODO: change here
+            from watchFaceParser.models.elements.goalProgress.paiGaugeElement import PaiGaugeElement # TO CHANGE !!
+            self._images4 = PaiGaugeElement(parameter = parameter, parent = self, name = '?_advancebar?')
             return self._images4
         elif parameterId == 6:
             from watchFaceParser.models.elements.goalProgress.paiClockHandElement import PaiClockHandElement 

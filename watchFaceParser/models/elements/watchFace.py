@@ -14,6 +14,7 @@ class WatchFace(ContainerElement):
         self._daysProgress = None
         self._paiProgress = None
         self._standProgress = None
+        self._kcalProgress = None
         self._status = None
         self._battery = None
         self._analogDial = None
@@ -47,6 +48,9 @@ class WatchFace(ContainerElement):
 
     def getPaiProgress(self):
         return self._paiProgress
+
+    def getKCalProgress(self):
+        return self._KCalProgress
 
     def getStandProgress(self):
         return self._standProgress
@@ -112,10 +116,14 @@ class WatchFace(ContainerElement):
             self._daysProgress = DaysProgressElement(parameter)
             return self._daysProgress
         #16=shortcuts
-        #elif parameterId == 18:
-        #    from watchFaceParser.models.elements.standProgressElement import StandProgressElement
-        #    self._standProgress = StandProgressElement(parameter)
-        #    return self._standProgress
+        elif parameterId == 17:
+            from watchFaceParser.models.elements.kcalProgressElement import KCalProgressElement
+            self._kcalProgress = KCalProgressElement(parameter)
+            return self._kcalProgress
+        elif parameterId == 18:
+            from watchFaceParser.models.elements.standProgressElement import StandProgressElement
+            self._standProgress = StandProgressElement(parameter)
+            return self._standProgress
         elif parameterId == 19:
             from watchFaceParser.models.elements.paiProgressElement import PaiProgressElement
             self._paiProgress = PaiProgressElement(parameter)
